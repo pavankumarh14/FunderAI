@@ -30,21 +30,28 @@ logger = logging.getLogger(__name__)
 
 
 def _get_llm() -> BaseChatModel:
-    """Instantiate a chat model from the configured LLM provider."""
+    """Instantiate a chat model from the configured LLM provider. Raises exception if not configured properly."""
     provider = settings.llm_provider.lower()
     if provider == "openai":
+        if not settings.openai_api_key:
+            raise ValueError("OPENAI_API_KEY is not configured")
         return ChatOpenAI(
             api_key=settings.openai_api_key,
             model=settings.openai_chat_model,
             temperature=0.2,
         )
     if provider == "gemini":
+        if not settings.gemini_api_key:
+            raise ValueError("GEMINI_API_KEY is not configured")
         from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatGoogleGenerativeAI(
             google_api_key=settings.gemini_api_key,
             model=settings.gemini_chat_model,
             temperature=0.2,
         )
+    # Default: Azure OpenAI
+    if not settings.azure_openai_api_key or not settings.azure_openai_endpoint:
+        raise ValueError("Azure OpenAI credentials are not configured")
     return AzureChatOpenAI(
         azure_endpoint=settings.azure_openai_endpoint,
         api_key=settings.azure_openai_api_key,  # type: ignore[arg-type]
