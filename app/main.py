@@ -86,15 +86,7 @@ def create_app() -> FastAPI:
 
     # Mount static files if directory exists
     if STATIC_DIR.exists():
-        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-
-        # Serve index.html for all other routes (client-side routing)
-        @app.get("/{full_path:path}")
-        async def serve_react_app(full_path: str):
-            index_path = STATIC_DIR / "index.html"
-            if index_path.exists():
-                return FileResponse(index_path)
-            return {"detail": "Not Found"}
+        app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
 
     return app
 
