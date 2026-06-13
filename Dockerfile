@@ -10,16 +10,16 @@ RUN apt-get update && apt-get install -y curl \
 # Set working directory
 WORKDIR /app
 
-# Install Python dependencies
+# Copy all project files first (so pip can find the 'app' package)
 COPY pyproject.toml ./
+COPY app ./app
+COPY frontend ./frontend
+
+# Install Python dependencies
 RUN pip install --no-cache-dir .
 
-# Copy frontend code and build it
-COPY frontend ./frontend
+# Build frontend
 RUN cd frontend && npm install && npm run build
-
-# Copy backend code
-COPY app ./app
 
 # Expose the port Render uses
 EXPOSE 10000
