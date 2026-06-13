@@ -87,48 +87,81 @@ def _build_initial_state(
     return GrantFlowState(applicant=applicant, available_grants=available_grants)
 
 
-def _state_to_response(final_state: GrantFlowState) -> EvaluateResponse:
+def _state_to_response(final_state) -> EvaluateResponse:
+    # Handle both dict and GrantFlowState object
+    if isinstance(final_state, dict):
+        state_dict = final_state
+    else:
+        state_dict = {
+            "available_grants": final_state.available_grants,
+            "matched_opportunities": final_state.matched_opportunities,
+            "eligibility_results": final_state.eligibility_results,
+            "gap_analysis": final_state.gap_analysis,
+            "proposal_drafts": final_state.proposal_drafts,
+            "submission_roadmap": final_state.submission_roadmap,
+            "error": final_state.error,
+        }
+    
     # Create a map of grant_id to grant details for enrichment
-    grant_map = {g.grant_id: g for g in final_state.available_grants}
+    grant_map = {}
+    available_grants = state_dict.get("available_grants", [])
+    for g in available_grants:
+        if isinstance(g, dict):
+            grant_map[g.get("grant_id")] = g
+        else:
+            grant_map[g.grant_id] = g
     
     # Enrich matched opportunities with grant details
     enriched_matches = []
-    for match in final_state.matched_opportunities:
+    for match in state_dict.get("matched_opportunities", []):
         grant = grant_map.get(match.get("grant_id"))
         enriched = {**match}
         if grant:
-            enriched["title"] = grant.title
-            enriched["funder"] = grant.funder
-            enriched["amount"] = grant.amount
-            enriched["deadline"] = grant.deadline
+            if isinstance(grant, dict):
+                enriched["title"] = grant.get("title")
+                enriched["funder"] = grant.get("funder")
+                enriched["amount"] = grant.get("amount")
+                enriched["deadline"] = grant.get("deadline")
+            else:
+                enriched["title"] = grant.title
+                enriched["funder"] = grant.funder
+                enriched["amount"] = grant.amount
+                enriched["deadline"] = grant.deadline
         enriched_matches.append(enriched)
     
     # Enrich eligibility results with grant details
     enriched_eligibility = []
-    for result in final_state.eligibility_results:
+    for result in state_dict.get("eligibility_results", []):
         grant = grant_map.get(result.get("grant_id"))
         enriched = {**result}
         if grant:
-            enriched["title"] = grant.title
-            enriched["funder"] = grant.funder
+            if isinstance(grant, dict):
+                enriched["title"] = grant.get("title")
+                enriched["funder"] = grant.get("funder")
+            else:
+                enriched["title"] = grant.title
+                enriched["funder"] = grant.funder
         enriched_eligibility.append(enriched)
     
     # Enrich gap analysis with grant details
     enriched_gaps = []
-    for gap in final_state.gap_analysis:
+    for gap in state_dict.get("gap_analysis", []):
         grant = grant_map.get(gap.get("grant_id"))
         enriched = {**gap}
         if grant:
-            enriched["grant_title"] = grant.title
+            if isinstance(grant, dict):
+                enriched["grant_title"] = grant.get("title")
+            else:
+                enriched["grant_title"] = grant.title
         enriched_gaps.append(enriched)
     
     return EvaluateResponse(
         matched_opportunities=enriched_matches,
         eligibility_results=enriched_eligibility,
         gap_analysis=enriched_gaps,
-        proposal_drafts=final_state.proposal_drafts,
-        submission_roadmap=final_state.submission_roadmap,
-        error=final_state.error,
+        proposal_drafts=state_dict.get("proposal_drafts", []),
+        submission_roadmap=state_dict.get("submission_roadmap", {}),
+        error=state_dict.get("error"),
     )
 
 
