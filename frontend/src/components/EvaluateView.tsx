@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, Trash2, Loader2, ChevronRight, Upload } from 'lucide-react'
+import { Plus, Trash2, Loader2, ChevronRight, Upload, Sparkles } from 'lucide-react'
 import { EvaluateResponse, GrantInput, EvaluateRequest, GrantOpportunityRequest } from '../types'
 import { evaluate, ingestPdf } from '../api'
 import ResultTabs from './ResultTabs'
@@ -7,6 +7,36 @@ import ResultTabs from './ResultTabs'
 const BLANK_GRANT = (): GrantInput => ({
   grant_id: '', title: '', funder: '', deadline: '', amount: '', requirements: '', description: '',
 })
+
+const EXAMPLE_GRANTS: GrantInput[] = [
+  {
+    grant_id: 'NSF-2025-012',
+    title: 'AI for Climate Resilience Grant',
+    funder: 'National Science Foundation',
+    deadline: '2025-12-15',
+    amount: '$750,000',
+    requirements: 'Nonprofit, 501(c)(3), Prior research publication, Interdisciplinary team',
+    description: 'Supports research and development of artificial intelligence solutions to improve climate resilience in vulnerable communities.'
+  },
+  {
+    grant_id: 'DOE-ETP-2024',
+    title: 'Energy Transition Partnership',
+    funder: 'Department of Energy',
+    deadline: '2025-09-30',
+    amount: '$500,000',
+    requirements: 'U.S.-based, Clean energy focus, Demonstration project',
+    description: 'Funds pilot projects that advance the transition to a clean energy economy through innovation and deployment.'
+  },
+  {
+    grant_id: 'NIH-R21-04',
+    title: 'Biomedical Innovation Exploratory Grant',
+    funder: 'National Institutes of Health',
+    deadline: '2025-06-01',
+    amount: '$250,000',
+    requirements: 'University, Research institute, IRB approval',
+    description: 'Exploratory/developmental grant program to support the early stages of innovative research projects.'
+  }
+]
 
 const PIPELINE_STEPS = ['Match Grants', 'Check Eligibility', 'Analyze Gaps', 'Draft Proposals']
 
@@ -23,6 +53,18 @@ export default function EvaluateView() {
   const [result,       setResult]       = useState<EvaluateResponse | null>(null)
   const [error,        setError]        = useState<string | null>(null)
   const [activeStep,   setActiveStep]   = useState<number>(-1)
+
+  const fillExamples = () => {
+    setOrgName('GreenTech Innovations Lab')
+    setOrgType('Nonprofit')
+    setDomain('Clean Energy & Climate Tech')
+    setTeamSize('18 FTE')
+    setBudget('$1.8M')
+    setDescription('A 501(c)(3) nonprofit research lab focused on developing low-cost renewable energy solutions for underserved communities. Our 18-person interdisciplinary team has published 12 peer-reviewed papers and previously received state-level grants.')
+    setGrants(EXAMPLE_GRANTS)
+    setResult(null)
+    setError(null)
+  }
 
   const updateGrant = (i: number, field: keyof GrantInput, val: string) =>
     setGrants(gs => gs.map((g, idx) => idx === i ? { ...g, [field]: val } : g))
