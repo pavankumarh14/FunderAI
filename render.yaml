@@ -1,16 +1,9 @@
 services:
   - type: web
     name: grantflow
-    env: python
+    env: docker
     plan: starter
-    buildCommand: |
-      # Install Python dependencies
-      pip install .
-      
-      # Install Node.js dependencies and build frontend
-      cd frontend && npm install && npm run build
-    startCommand: |
-      uvicorn app.main:app --host 0.0.0.0 --port 10000
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_ENV
         value: production
