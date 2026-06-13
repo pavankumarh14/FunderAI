@@ -20,9 +20,9 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#4F46E5] flex items-center justify-center text-white font-black text-sm">
-              G
+              F
             </div>
-            <span className="font-extrabold text-slate-900 text-[15px]">GrantFlow</span>
+            <span className="font-extrabold text-slate-900 text-[15px]">FunderAI</span>
             <span className="px-2 py-0.5 rounded-full bg-purple-50 border border-purple-200 text-purple-600 text-[10px] font-bold uppercase tracking-wide">
               Funding Copilot
             </span>

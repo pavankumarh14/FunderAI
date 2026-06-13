@@ -50,7 +50,7 @@ STATIC_DIR = Path(__file__).parent / "static"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log.info(
-        "🚀 GrantFlow starting",
+        "🚀 FunderAI starting",
         env=settings.app_env,
         llm_provider=settings.llm_provider,
         azure_endpoint=settings.azure_openai_endpoint or "(not configured)",
@@ -60,7 +60,7 @@ async def lifespan(app: FastAPI):
         static_dir_contents=list(STATIC_DIR.iterdir()) if STATIC_DIR.exists() else [],
     )
     yield
-    log.info("👋 GrantFlow shutting down")
+    log.info("👋 FunderAI shutting down")
 
 
 # ---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="GrantFlow — Funding Opportunity Copilot",
+        title="FunderAI — Funding Opportunity Copilot",
         description=(
             "A LangGraph multi-agent system that helps researchers and startups "
             "find, evaluate, and prepare grant applications."

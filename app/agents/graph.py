@@ -35,4 +35,4 @@ builder.add_edge("proposal_drafting", "submission_roadmap")
 builder.add_edge("submission_roadmap", END)
 
 # Compile the graph
-graph = builder.compile(name="grantflow")
+graph = builder.compile(name="funderai")

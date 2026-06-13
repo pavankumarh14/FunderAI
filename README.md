@@ -1,10 +1,10 @@
-# GrantFlow — Funding Opportunity Copilot
+# FunderAI — Funding Opportunity Copilot
 
-GrantFlow is an AI-powered FastAPI service that guides researchers and startups through the entire grant application lifecycle — from discovering matching opportunities to producing a ready-to-submit proposal and timeline.
+FunderAI is an AI-powered FastAPI service that guides researchers and startups through the entire grant application lifecycle — from discovering matching opportunities to producing a ready-to-submit proposal and timeline.
 
 ---
 
-## What GrantFlow does
+## What FunderAI does
 
 1. **Ingests** an applicant profile (organization type, domain, team size, project description, budget) alongside a list of grant opportunities (title, funder, deadline, requirements).
 2. **Runs a 5-agent LangGraph pipeline** that progressively enriches the analysis.

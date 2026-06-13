@@ -173,13 +173,13 @@ def _state_to_response(final_state) -> EvaluateResponse:
 @router.get("/health")
 async def health() -> dict:
     """Simple liveness probe."""
-    return {"status": "ok", "service": "grantflow"}
+    return {"status": "ok", "service": "funderai"}
 
 
 @router.post("/evaluate", response_model=EvaluateResponse)
 async def evaluate(body: EvaluateRequest) -> EvaluateResponse:
     """
-    Run the full GrantFlow pipeline for the provided applicant and grant list.
+    Run the full FunderAI pipeline for the provided applicant and grant list.
 
     The pipeline runs five agents in sequence:
     OpportunityDiscovery -> Eligibility -> GapAnalysis -> ProposalDrafting -> SubmissionRoadmap
