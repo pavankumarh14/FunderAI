@@ -6,7 +6,7 @@ from pathlib import Path
 
 import structlog
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -30,8 +30,10 @@ structlog.configure(
     logger_factory=structlog.stdlib.LoggerFactory(),
 )
 
+# Set more verbose logging for debugging
 logging.basicConfig(
-    level=logging.INFO if settings.app_env != "production" else logging.WARNING,
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
 log = structlog.get_logger(__name__)
@@ -48,14 +50,17 @@ STATIC_DIR = Path(__file__).parent / "static"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log.info(
-        "GrantFlow starting",
+        "🚀 GrantFlow starting",
         env=settings.app_env,
+        llm_provider=settings.llm_provider,
         azure_endpoint=settings.azure_openai_endpoint or "(not configured)",
         deployment=settings.azure_openai_chat_deployment,
+        static_dir_exists=STATIC_DIR.exists(),
         static_dir=str(STATIC_DIR),
+        static_dir_contents=list(STATIC_DIR.iterdir()) if STATIC_DIR.exists() else [],
     )
     yield
-    log.info("GrantFlow shutting down")
+    log.info("👋 GrantFlow shutting down")
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +79,21 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    # Add exception handler to log all errors
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        log.exception(
+            "🚨 Unhandled exception occurred",
+            request_url=str(request.url),
+            request_method=request.method,
+            error=str(exc),
+        )
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Internal server error: {str(exc)}"}
+        )
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -86,7 +106,10 @@ def create_app() -> FastAPI:
 
     # Mount static files if directory exists
     if STATIC_DIR.exists():
+        log.info("📂 Mounting static files directory", path=str(STATIC_DIR))
         app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
+    else:
+        log.warning("⚠️ Static files directory not found", path=str(STATIC_DIR))
 
     return app
 
