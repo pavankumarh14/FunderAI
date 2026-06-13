@@ -5,7 +5,7 @@ services:
     plan: starter
     buildCommand: |
       # Install Python dependencies
-      pip install -e .
+      pip install .
       
       # Install Node.js dependencies and build frontend
       cd frontend && npm install && npm run build
