@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: grantflow
+    env: python
+    plan: starter
+    buildCommand: |
+      # Install Python dependencies
+      pip install -e .
+      
+      # Install Node.js dependencies and build frontend
+      cd frontend && npm install && npm run build
+    startCommand: |
+      uvicorn app.main:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: LLM_PROVIDER
+        value: openai # or azure, gemini
+      - key: OPENAI_API_KEY
+        fromSecret: openai_api_key # Add this secret in Render dashboard
+      # For Azure:
+      # - key: AZURE_OPENAI_ENDPOINT
+      #   fromSecret: azure_openai_endpoint
+      # - key: AZURE_OPENAI_API_KEY
+      #   fromSecret: azure_openai_api_key
+      # - key: AZURE_OPENAI_CHAT_DEPLOYMENT
+      #   fromSecret: azure_openai_chat_deployment
+      # - key: AZURE_OPENAI_API_VERSION
+      #   value: 2024-02-01
