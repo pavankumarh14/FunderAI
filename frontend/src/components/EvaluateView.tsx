@@ -139,7 +139,13 @@ export default function EvaluateView() {
         <div className="flex flex-col gap-6">
           {/* Applicant Profile */}
           <section className="bg-white border border-slate-200 rounded-2xl p-6">
-            <p className="text-[11px] font-black text-purple-500 uppercase tracking-widest mb-4">Applicant Profile</p>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[11px] font-black text-purple-500 uppercase tracking-widest">Applicant Profile</p>
+              <button onClick={fillExamples}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold hover:bg-amber-100 transition-colors">
+                <Sparkles size={12} /> Fill with Examples
+              </button>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
                 <Label>Organization Name</Label>

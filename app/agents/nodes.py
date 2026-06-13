@@ -49,6 +49,15 @@ def _get_llm() -> BaseChatModel:
             model=settings.gemini_chat_model,
             temperature=0.2,
         )
+    if provider == "grok":
+        if not settings.grok_api_key:
+            raise ValueError("GROK_API_KEY is not configured")
+        return ChatOpenAI(
+            api_key=settings.grok_api_key,
+            base_url="https://api.x.ai/v1",
+            model=settings.grok_chat_model,
+            temperature=0.2,
+        )
     # Default: Azure OpenAI
     if not settings.azure_openai_api_key or not settings.azure_openai_endpoint:
         raise ValueError("Azure OpenAI credentials are not configured")

@@ -13,7 +13,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # LLM provider selection: "azure" | "openai" | "gemini"
+    # LLM provider selection: "azure" | "openai" | "gemini" | "grok"
     llm_provider: str = "azure"
 
     # Azure OpenAI
@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     # Gemini
     gemini_api_key: str = ""
     gemini_chat_model: str = "gemini-1.5-pro"
+
+    # X.AI Grok
+    grok_api_key: str = ""
+    grok_chat_model: str = "grok-2-latest"
 
     # App
     app_env: str = "development"
